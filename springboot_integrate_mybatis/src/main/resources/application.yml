@@ -23,4 +23,6 @@ spring:
 #    initialization-mode: always
 #    schema: classpath:usertable.sql
 
-
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml

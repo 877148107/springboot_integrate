@@ -1,0 +1,13 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wmy.integrate.mybatis.mapper.DepartmentMapper">
+    <select id="getDeptById" resultType="com.wmy.integrate.mybatis.model.Department">
+        SELECT * FROM department where id=#{id}
+    </select>
+    
+    <select id="insertDept">
+        insert into department(dept_name)values(#{deptName})
+    </select>
+</mapper>
