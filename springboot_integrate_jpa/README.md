@@ -1,4 +1,4 @@
-## SpringBoot整合Druid、Mybatis框架
+## SpringBoot整合JPA框架
 
 ------
 
