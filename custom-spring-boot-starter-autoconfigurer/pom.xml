@@ -2,21 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
-    <modules>
-        <module>springboot_integrate_mybatis</module>
-        <module>custom-spring-boot-starter</module>
-    </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.wmy.integrate</groupId>
-    <artifactId>springboot_integrate</artifactId>
+    <groupId>com.wmy.integrate.starter</groupId>
+    <artifactId>custom-spring-boot-starter-autoconfigurer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot_integrate</name>
+    <name>custom-spring-boot-starter-autoconfigurer</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -24,10 +19,12 @@
     </properties>
 
     <dependencies>
+        <!--引入SpringBoot starter，所有starter的基本配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-    </dependencies>
 
+    </dependencies>
 </project>
+
