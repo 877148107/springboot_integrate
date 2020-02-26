@@ -68,9 +68,13 @@ public class ExcelToJavaBean {
 
             //表备注
             if (isTable) {
-                tableSqlContext.append(")").append("\r\n");
+                tableSqlContext.append(");").append("\r\n");
                 tableSqlContext.append("comment on table ").append(tableName).append("\r\n");
                 tableSqlContext.append("  is '").append(fileContext).append("';").append("\r\n");
+                tableSqlContext.append("comment on column ").append(tableName).append(".").append("ENTITY_CREATE_DATE").append("\r\n");
+                tableSqlContext.append("  is '").append("数据更新时间").append("';").append("\r\n");
+                tableSqlContext.append("comment on column ").append(tableName).append(".").append("ENTITY_UPDATE_DATE").append("\r\n");
+                tableSqlContext.append("  is '").append("数据创建时间").append("';").append("\r\n");
             }
 
             //创建文件set、get方法
@@ -84,7 +88,7 @@ public class ExcelToJavaBean {
             javaFileContext.append("\r\n}");
             //创建主键
             tableSqlContext.append("alter table ").append(tableName).append("\r\n");
-            tableSqlContext.append("  add constraint PRI_").append(tableName).append("primary key (ID); ");
+            tableSqlContext.append("  add constraint PRI_").append(tableName.replace("PMS_I_","")).append(" primary key (ID); ");
             //创建java文件
             createJavaFile(javaFileContext.toString(),fileName,false);
             //创建sql文件
@@ -119,7 +123,7 @@ public class ExcelToJavaBean {
             javaFileContext.append("\t * @return").append("\r\n");
             javaFileContext.append("\t */").append("\r\n");
         }
-        if("数据实体".equals(attributeContext)){
+        if("数据实体".equals(attributeType)){
             //封装set、get方法
             javaFileContext.append("\tpublic List ")
                     .append(" get").append(initcap(convertToJavaAttribute(attributeName)))
@@ -208,7 +212,7 @@ public class ExcelToJavaBean {
 
         //如果要创建表添加建表语句
         if (isTable) {
-            tableSqlContext.append("create table ").append(tableName).append(")").append("\r\n");
+            tableSqlContext.append("create table ").append(tableName).append("（").append("\r\n");
             tableSqlContext.append("  ").append("id           NUMBER(19) not null, ").append("\r\n");
             tableSqlContext.append("  ").append("ENTITY_CREATE_DATE Date, ").append("\r\n");
             tableSqlContext.append("  ").append("ENTITY_UPDATE_DATE Date, ").append("\r\n");
@@ -233,7 +237,7 @@ public class ExcelToJavaBean {
         //字段数据类型
         String attributeType = row.getCell(2).getStringCellValue();
 
-        if("数据实体".equals(attributeContext)){
+        if("数据实体".equals(attributeType)){
             //封装属性
             javaFileContext.append("\t/**").append("\n");
             javaFileContext.append("\t * ").append(attributeContext).append("\n");
@@ -304,10 +308,16 @@ public class ExcelToJavaBean {
                 || sqlType.equalsIgnoreCase("timestamp with local time zone")
                 || sqlType.equalsIgnoreCase("timestamp with time zone")) {
             return "Date";
-        } else if (sqlType.equalsIgnoreCase("number") && !attribute.toUpperCase().contains("AMOUNT")) {
-            return "Long";
-        }else if (sqlType.equalsIgnoreCase("number") && attribute.toUpperCase().contains("AMOUNT")) {
+        } else if (sqlType.equalsIgnoreCase("number") && attribute.toUpperCase().contains("AMOUNT")) {
             return "Double";
+        }else if (sqlType.equalsIgnoreCase("number") && attribute.toUpperCase().contains("TAX")) {
+            return "Double";
+        }else if (sqlType.equalsIgnoreCase("number") && attribute.toUpperCase().contains("PRICE")) {
+            return "Double";
+        }else if (sqlType.equalsIgnoreCase("number") && attribute.toUpperCase().contains("QUANTITY")) {
+            return "Double";
+        }else if (sqlType.equalsIgnoreCase("number")) {
+            return "Long";
         }
 
         return "String";
