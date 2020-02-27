@@ -10,3 +10,4 @@
 
 ### 4.SpringBoot自定义starter自动配置：[custom-spring-boot-starter-autoconfigurer](https://github.com/877148107/springboot_integrate/tree/master/custom-spring-boot-starter-autoconfigurer)
 
+### 5.SpringBoot整合redis：[springboot-integrate-cache-redis](https://github.com/877148107/springboot_integrate/tree/master/springboot-integrate-cache-redis)
