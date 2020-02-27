@@ -20,12 +20,9 @@ class SpringbootIntegrateCacheRedisApplicationTests {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    RedisTemplate empRedisTemplate;
-
     @Test
     void testRedis(){
-        empRedisTemplate.opsForValue().set("emp-01",employeeService.getEmp(3));
+        redisTemplate.opsForValue().set("emp-05",employeeService.getEmp(6));
     }
 
     @Test
