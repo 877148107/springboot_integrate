@@ -23,6 +23,7 @@ public class ExcelToJavaBean {
 
     private static String FILE_PATH = "F:/pms.xlsx";
 
+    private static boolean isTable = false;
     /**
      * 指定实体生成所在包的路径
       */
@@ -39,7 +40,7 @@ public class ExcelToJavaBean {
             Sheet sheet = workbook.getSheetAt(i);
             String sheetName = sheet.getSheetName();
             //如果包含下划线则需要创建数据库，sheet名为表名
-            boolean isTable = false;
+            isTable = false;
             //java文件内容
             StringBuffer javaFileContext = new StringBuffer();
             //建表sql
@@ -280,7 +281,7 @@ public class ExcelToJavaBean {
                 ch[j] = (char) (ch[j] - 32);
             }
         }
-        return new String(ch);
+        return isTable?new String(ch):new String(ch).toUpperCase();
     }
 
     /**
