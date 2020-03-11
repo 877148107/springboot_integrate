@@ -24,6 +24,17 @@ public class ExcelToJavaBean {
     private static String FILE_PATH = "F:/pms.xlsx";
 
     private static boolean isTable = false;
+
+    /**
+     * get set是否大写
+     */
+    private static boolean isUpperCase = false;
+
+    /**
+     * 是否开启驼峰命名法
+     */
+    private static boolean IS_HUMP_NAMED = false;
+
     /**
      * 指定实体生成所在包的路径
       */
@@ -91,10 +102,11 @@ public class ExcelToJavaBean {
             tableSqlContext.append("alter table ").append(tableName).append("\r\n");
             tableSqlContext.append("  add constraint PRI_").append(tableName.replace("PMS_I_","")).append(" primary key (ID); ");
             //创建java文件
-            createJavaFile(javaFileContext.toString(),fileName,false);
+            createJavaFile(javaFileContext.toString(),fileName,null);
             //创建sql文件
             if (isTable) {
-                createJavaFile(tableSqlContext.toString(),tableName,isTable);
+                createJavaFile(tableSqlContext.toString(),tableName,1L);
+                createJavaFile(tableSqlContext.toString(),tableName,2L);
             }
         }
     }
@@ -118,7 +130,7 @@ public class ExcelToJavaBean {
         String attributeType = row.getCell(2).getStringCellValue();
 
         javaFileContext.append("\r\n");
-        if (isTable) {
+        if (isTable && !"数据实体".equals(attributeType)) {
             javaFileContext.append("\t/**").append("\r\n");
             javaFileContext.append("\t * @hibernate.property column = ").append("\"").append(attributeName).append("\"").append("\r\n");
             javaFileContext.append("\t * @return").append("\r\n");
@@ -197,7 +209,7 @@ public class ExcelToJavaBean {
         javaFileContext.append(" * @Version: V1.0").append("\r\n");
         javaFileContext.append(" *").append("\r\n");
         if (isTable) {
-            javaFileContext.append(" * @hibernate.class ").append("table = \"PMS_I_PAGE_IQUIRY_MATEXIST_AMT\"")
+            javaFileContext.append(" * @hibernate.class ").append("table = \""+tableName.toUpperCase()+"\"")
                     .append(" dynamic-update = \"false\"").append("\r\n");
             javaFileContext.append(" *                  dynamic-insert = \"false\" ").append("\r\n");
             javaFileContext.append(" *").append("\r\n");
@@ -281,7 +293,10 @@ public class ExcelToJavaBean {
                 ch[j] = (char) (ch[j] - 32);
             }
         }
-        return isTable?new String(ch):new String(ch).toUpperCase();
+        if (!IS_HUMP_NAMED) {
+            return string2;
+        }
+        return isUpperCase?new String(ch).toUpperCase():new String(ch);
     }
 
     /**
@@ -371,10 +386,16 @@ public class ExcelToJavaBean {
 
             }
         }
-        return builder.toString();
+        return IS_HUMP_NAMED?builder.toString():sheetName;
     }
 
-    public void createJavaFile(String content,String fileName,boolean isTable){
+    /**
+     * 创建文件
+     * @param content
+     * @param fileName
+     * @param type
+     */
+    public void createJavaFile(String content,String fileName,Long type){
         try {
             File directory = new File("");
             String path = this.getClass().getResource("").getPath();
@@ -386,10 +407,17 @@ public class ExcelToJavaBean {
             String outputPath = directory.getAbsolutePath() + "/src/"
                     + this.packageOutPath.replace(".", "/") + "/"
                     + fileName + ".java";
-            if(isTable){
+            //建表sql
+            if(type!=null && type==1L){
                 outputPath = directory.getAbsolutePath() + "/src/"
                         + this.packageOutPath.replace(".", "/") + "/"
                         + fileName + ".sql";
+            }
+            //hibernate映射文件
+            if(type!=null && type==2L){
+                outputPath = directory.getAbsolutePath() + "/src/"
+                        + this.packageOutPath.replace(".", "/") + "/"
+                        + fileName + ".hbm.xml";
             }
 
             OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outputPath),"GBK");
