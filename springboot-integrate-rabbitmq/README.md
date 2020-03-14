@@ -1,14 +1,14 @@
-## SpringBootÕûºÏRabbitMQ¿ò¼Ü
+## SpringBootæ•´åˆRabbitMQæ¡†æ¶
 
 ------
 
-### 1.ÏêÏ¸ÕûºÏËµÃ÷µØÖ·£ºhttps://blog.csdn.net/WMY1230/article/details/104763030
+### 1.è¯¦ç»†æ•´åˆè¯´æ˜åœ°å€ï¼šhttps://blog.csdn.net/WMY1230/article/details/104763030
 
-### 2.RabbitMQ×Ô¶¯ÅäÖÃÔ­Àí
+### 2.RabbitMQè‡ªåŠ¨é…ç½®åŸç†
 
-×Ô¶¯ÅäÖÃÀàRabbitAutoConfiguration
+è‡ªåŠ¨é…ç½®ç±»RabbitAutoConfiguration
 
-1¡¢×Ô¶¯ÅäÖÃÁËÁ´½Ó¹¤³§ConnectionFactory
+1ã€è‡ªåŠ¨é…ç½®äº†é“¾æ¥å·¥å‚ConnectionFactory
 
 ```java
 @Configuration(proxyBeanMethods = false)
@@ -42,7 +42,7 @@ public class RabbitAutoConfiguration {
 		}
 ```
 
-2¡¢RabbitProperties·â×°ÁËRabbitMQµÄËùÓĞÅäÖÃ
+2ã€RabbitPropertieså°è£…äº†RabbitMQçš„æ‰€æœ‰é…ç½®
 
 ```propertiesproper
 spring.rabbitmq.host=192.168.0.113
@@ -50,8 +50,8 @@ spring.rabbitmq.username=guest
 spring.rabbitmq.password=guest
 ```
 
-3¡¢RabbitTemplate¸øRabbitMQ·¢ËÍºÍ½ÓÊÕÏûÏ¢
+3ã€RabbitTemplateç»™RabbitMQå‘é€å’Œæ¥æ”¶æ¶ˆæ¯
 
-4¡¢ AmqpAdmin£ºRabbitMQÏµÍ³¹ÜÀí¹¦ÄÜ×é¼ş£¬´´½¨½»»»Æ÷¡¢¶ÓÁĞµÈ
+4ã€ AmqpAdminï¼šRabbitMQç³»ç»Ÿç®¡ç†åŠŸèƒ½ç»„ä»¶ï¼Œåˆ›å»ºäº¤æ¢å™¨ã€é˜Ÿåˆ—ç­‰
 
-5¡¢²âÊÔSpringbootIntegrateRabbitmqApplicationTests
+5ã€æµ‹è¯•SpringbootIntegrateRabbitmqApplicationTests
