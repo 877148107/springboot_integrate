@@ -1,5 +1,8 @@
 ## SpringBoot整合ElasticSearch
 
+### 1.详细整合说明地址：https://blog.csdn.net/WMY1230/article/details/104827455
+
+
 ## 1、ES的自动配置
 
 SpringBoot默认支持两种技术和ES进行交互，Jest和SpringBoot-data-elasticSearch
