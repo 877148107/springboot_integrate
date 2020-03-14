@@ -23,10 +23,27 @@ public class ExcelToJavaBean {
 
     private static String FILE_PATH = "F:/pms.xlsx";
 
+    private static boolean isTable = false;
+
+    /**
+     * get set是否大写
+     */
+    private static boolean isUpperCase = false;
+
+    /**
+     * 是否开启驼峰命名法
+     */
+    private static boolean IS_HUMP_NAMED = false;
+
     /**
      * 指定实体生成所在包的路径
       */
     private String packageOutPath = "main.java.com.wmy.integrate.tools.model";
+
+    /**
+     * 实体包名
+     */
+    private String MODEL_PATH = "com.boco.scms.connector.osberp.model.pms.";
 
     @Test
     public void analysisExcel() throws Exception{
@@ -39,11 +56,14 @@ public class ExcelToJavaBean {
             Sheet sheet = workbook.getSheetAt(i);
             String sheetName = sheet.getSheetName();
             //如果包含下划线则需要创建数据库，sheet名为表名
-            boolean isTable = false;
+            isTable = false;
             //java文件内容
             StringBuffer javaFileContext = new StringBuffer();
             //建表sql
             StringBuffer tableSqlContext = new StringBuffer();
+            //hibernate映射文件
+            StringBuffer hibernateContext = new StringBuffer();
+
             if(sheetName.contains("_")){
                 isTable = true;
             }
@@ -59,11 +79,14 @@ public class ExcelToJavaBean {
             String fileContext = sheet.getRow(0).getCell(2).getStringCellValue();
             //创建文件头内容
             createFileOrTableContextTitle(isTable,tableName,fileName,fileContext,javaFileContext,tableSqlContext);
-
+            //创建hibernate头信息
+            if (isTable) {
+                createHibernateContext(hibernateContext,tableName,fileName);
+            }
             //创建文件属性
             for (int j = 1; j <= sheet.getLastRowNum(); j++) {
                 Row row = sheet.getRow(j);
-                createFileOrTableContext(row,isTable,javaFileContext,tableSqlContext,tableName,fileContext,fileName);
+                createFileOrTableContext(row,isTable,javaFileContext,tableSqlContext,tableName,fileContext,fileName,hibernateContext);
             }
 
             //表备注
@@ -75,6 +98,9 @@ public class ExcelToJavaBean {
                 tableSqlContext.append("  is '").append("数据更新时间").append("';").append("\r\n");
                 tableSqlContext.append("comment on column ").append(tableName).append(".").append("ENTITY_UPDATE_DATE").append("\r\n");
                 tableSqlContext.append("  is '").append("数据创建时间").append("';").append("\r\n");
+
+                hibernateContext.append("  </class>\n");
+                hibernateContext.append("</hibernate-mapping>\n");
             }
 
             //创建文件set、get方法
@@ -90,12 +116,36 @@ public class ExcelToJavaBean {
             tableSqlContext.append("alter table ").append(tableName).append("\r\n");
             tableSqlContext.append("  add constraint PRI_").append(tableName.replace("PMS_I_","")).append(" primary key (ID); ");
             //创建java文件
-            createJavaFile(javaFileContext.toString(),fileName,false);
+            createJavaFile(javaFileContext.toString(),fileName,null);
             //创建sql文件
             if (isTable) {
-                createJavaFile(tableSqlContext.toString(),tableName,isTable);
+                createJavaFile(tableSqlContext.toString(),tableName,1L);
+                createJavaFile(hibernateContext.toString(),fileName,2L);
             }
         }
+    }
+
+    /**
+     * 组装hibernate映射文件头信息
+     * @param tableName
+     * @param fileName
+     */
+    private void createHibernateContext(StringBuffer  hibernateContext,String tableName, String fileName) {
+        hibernateContext.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n");
+        hibernateContext.append("<!DOCTYPE hibernate-mapping PUBLIC \"-//Hibernate/Hibernate Mapping DTD 3.0//EN\" \"\r\n");
+        hibernateContext.append("http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd\">\r\n");
+        hibernateContext.append("<hibernate-mapping>\r\n");
+
+        hibernateContext.append("  <class dynamic-update=\"false\" table=\"").append(tableName.toUpperCase())
+                .append("\" ").append("name=\"").append(MODEL_PATH).append(fileName).append("\"\r\n");
+        hibernateContext.append("   dynamic-insert=\"false\">\r\n");
+
+        hibernateContext.append("    <id name=\"id\">\n");
+        hibernateContext.append("      <generator class=\"native\"/>\n");
+        hibernateContext.append("    </id>\n");
+
+        hibernateContext.append("    <property name=\"erpUpdateDate\" column=\"ENTITY_UPDATE_DATE\"/>\n");
+        hibernateContext.append("    <property name=\"erpCreateDate\" column=\"ENTITY_CREATE_DATE\"/>\n");
     }
 
     /**
@@ -117,7 +167,7 @@ public class ExcelToJavaBean {
         String attributeType = row.getCell(2).getStringCellValue();
 
         javaFileContext.append("\r\n");
-        if (isTable) {
+        if (isTable && !"数据实体".equals(attributeType)) {
             javaFileContext.append("\t/**").append("\r\n");
             javaFileContext.append("\t * @hibernate.property column = ").append("\"").append(attributeName).append("\"").append("\r\n");
             javaFileContext.append("\t * @return").append("\r\n");
@@ -138,6 +188,7 @@ public class ExcelToJavaBean {
                     .append(convertToJavaAttribute(attributeName)).append(";\r\n");
             javaFileContext.append("\t}\r\n");
         }else{
+            System.out.println("attributeName:"+attributeName);
             //封装set、get方法
             javaFileContext.append("\tpublic ").append(sqlType2JavaType(attributeType,attributeName))
                     .append(" get").append(initcap(convertToJavaAttribute(attributeName)))
@@ -196,7 +247,7 @@ public class ExcelToJavaBean {
         javaFileContext.append(" * @Version: V1.0").append("\r\n");
         javaFileContext.append(" *").append("\r\n");
         if (isTable) {
-            javaFileContext.append(" * @hibernate.class ").append("table = \"PMS_I_PAGE_IQUIRY_MATEXIST_AMT\"")
+            javaFileContext.append(" * @hibernate.class ").append("table = \""+tableName.toUpperCase()+"\"")
                     .append(" dynamic-update = \"false\"").append("\r\n");
             javaFileContext.append(" *                  dynamic-insert = \"false\" ").append("\r\n");
             javaFileContext.append(" *").append("\r\n");
@@ -229,7 +280,8 @@ public class ExcelToJavaBean {
      * @param fileContext
      * @param fileName
      */
-    private void createFileOrTableContext(Row row, boolean isTable, StringBuffer javaFileContext, StringBuffer tableSqlContext, String tableName, String fileContext, String fileName) {
+    private void createFileOrTableContext(Row row, boolean isTable, StringBuffer javaFileContext, StringBuffer tableSqlContext,
+                                          String tableName, String fileContext, String fileName,StringBuffer hibernateContext) {
         //字段名称
         String attributeName = row.getCell(0).getStringCellValue();
         //字段备注
@@ -263,6 +315,10 @@ public class ExcelToJavaBean {
             }else{
                 tableSqlContext.append("  ").append(attributeName).append(" ").append(attributeType).append(",\r\n");
             }
+            if(!"数据实体".equals(attributeType)){
+                hibernateContext.append("    <property name=\"").append(convertToJavaAttribute(attributeName))
+                        .append("\" column=\"").append(attributeName).append("\"/>\r\n");
+            }
         }
 
     }
@@ -280,7 +336,10 @@ public class ExcelToJavaBean {
                 ch[j] = (char) (ch[j] - 32);
             }
         }
-        return new String(ch);
+        if (!IS_HUMP_NAMED) {
+            return string2;
+        }
+        return isUpperCase?new String(ch).toUpperCase():new String(ch);
     }
 
     /**
@@ -370,10 +429,16 @@ public class ExcelToJavaBean {
 
             }
         }
-        return builder.toString();
+        return IS_HUMP_NAMED?builder.toString():sheetName;
     }
 
-    public void createJavaFile(String content,String fileName,boolean isTable){
+    /**
+     * 创建文件
+     * @param content
+     * @param fileName
+     * @param type
+     */
+    public void createJavaFile(String content,String fileName,Long type){
         try {
             File directory = new File("");
             String path = this.getClass().getResource("").getPath();
@@ -385,10 +450,17 @@ public class ExcelToJavaBean {
             String outputPath = directory.getAbsolutePath() + "/src/"
                     + this.packageOutPath.replace(".", "/") + "/"
                     + fileName + ".java";
-            if(isTable){
+            //建表sql
+            if(type!=null && type==1L){
                 outputPath = directory.getAbsolutePath() + "/src/"
                         + this.packageOutPath.replace(".", "/") + "/"
                         + fileName + ".sql";
+            }
+            //hibernate映射文件
+            if(type!=null && type==2L){
+                outputPath = directory.getAbsolutePath() + "/src/"
+                        + this.packageOutPath.replace(".", "/") + "/"
+                        + fileName + ".hbm.xml";
             }
 
             OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outputPath),"GBK");
