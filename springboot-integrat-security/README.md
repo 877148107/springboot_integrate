@@ -75,6 +75,14 @@ java.lang.IllegalArgumentException: There is no PasswordEncoder mapped for the i
 
 解决方案：https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/htmlsingle/#servlet-hello
 
+密码的一般格式为：
+
+```
+{id} encodedPassword
+```
+
+这样`id`的标识符是用于查找`PasswordEncoder`应使用的标识符，并且`encodedPassword`是所选的原始编码密码`PasswordEncoder`。在`id`必须在密码的开始，开始`{`和结束`}`。如果`id`找不到，`id`则将为null。例如，以下可能是使用different编码的密码列表`id`。所有原始密码均为“密码”。
+
 
 
 
