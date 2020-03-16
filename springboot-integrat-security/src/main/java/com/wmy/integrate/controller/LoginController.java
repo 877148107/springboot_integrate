@@ -26,38 +26,13 @@ public class LoginController {
     public String login(@RequestParam("userName") String userName,
                         @RequestParam("password") String password,
                         Map<String,Object> map, HttpSession session){
-        if("admin".equals(userName) && "123456".equals(password)){
+        if("123456".equals(password)){
             session.setAttribute("userName",userName);
             return "redirect:/main.html";
         }else{
             map.put("msg","用户名密码错误");
             return "login";
         }
-    }
-
-    @RequestMapping("/order")
-    public String orderPage(){
-        return "/page/order";
-    }
-
-    @RequestMapping("/product")
-    public String productPage(){
-        return "/page/product";
-    }
-
-    @RequestMapping("/customer")
-    public String customerPage(){
-        return "/page/customer";
-    }
-
-    @RequestMapping("report")
-    public String reportPage(){
-        return "/page/report";
-    }
-
-    @RequestMapping("/system")
-    public String systemPage(){
-        return "/page/system";
     }
 
 }
