@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * @ClassName: MySecurityConfig
@@ -50,6 +51,12 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .successForwardUrl("/page/main")
                 //登录失败后跳转的页面
                 .failureForwardUrl("/");
+        //开启自动配置的注销功能,注销请求路径/logout并注销session
+        http.logout()
+                //由于页面采用的是超链接get请求方式进行注销，而自动配置默认使用的post请求
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout","GET"))
+                //配置注销成功跳转的url
+                .logoutSuccessUrl("/");
     }
 
     /**
