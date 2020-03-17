@@ -1,8 +1,10 @@
 ## SpringBoot整合Security
 
-Security参考文献：https://spring.io/guides/gs/securing-web/
+Security参考文档：https://spring.io/guides/gs/securing-web/
 
-thymeleaf文档：https://www.thymeleaf.org/doc/articles/springsecurity.html
+thymeleaf参考文档：https://www.thymeleaf.org/doc/articles/springsecurity.html
+
+thymeleaf继承security源码：https://github.com/thymeleaf/thymeleaf-extras-springsecurity
 
 官网文档：https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/htmlsingle/#community
 
