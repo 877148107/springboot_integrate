@@ -1,4 +1,4 @@
-package com.wmy.integrate.controller;
+package com.wmy.integrate.shiro.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
