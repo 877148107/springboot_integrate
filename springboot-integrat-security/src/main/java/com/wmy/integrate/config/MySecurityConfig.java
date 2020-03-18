@@ -58,6 +58,8 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout","GET"))
                 //配置注销成功跳转的url
                 .logoutSuccessUrl("/");
+        //开启自动配置的记住我，这里form表单的name默认是remember-me，也可以自己定义参数名
+        http.rememberMe();
     }
 
     /**
@@ -69,7 +71,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //在内存里面校验
         auth.inMemoryAuthentication()
+                //这里需要对密码进行编码不然会抛异常，详细情况可以参考错误信息及官方文档
                 .passwordEncoder(new BCryptPasswordEncoder())
+                //分别赋予登录的角色编码
                 .withUser("admin").password(new BCryptPasswordEncoder().encode("123456")).roles("systemManager","productManager","orderManager")
                 .and()
                 .withUser("zhangsan").password(new BCryptPasswordEncoder().encode("123456")).roles("productManager")
