@@ -1,0 +1,13 @@
+#应用名称
+spring:
+  application:
+    name: springcloud-consumer
+#端口
+server:
+  port: 8200
+
+#当前应用也需要注册在注册中心
+eureka:
+  instance:
+    #注册的时候使用ip地址
+    prefer-ip-address: true
