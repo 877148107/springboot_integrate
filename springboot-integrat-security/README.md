@@ -1,4 +1,8 @@
 ## SpringBoot整合Security
+------
+
+### 1.详细整合说明地址：https://blog.csdn.net/WMY1230/article/details/104957281
+
 
 Security参考文档：https://spring.io/guides/gs/securing-web/
 
