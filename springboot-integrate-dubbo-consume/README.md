@@ -1,4 +1,4 @@
-## SpringBoot整合Redis框架
+## SpringBoot整合dubbo、zookeeper，作为服务消费者工程
 
 ------
 

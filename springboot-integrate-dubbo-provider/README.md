@@ -1,4 +1,4 @@
-## SpringBoot整合dubbo、zookeeper
+## SpringBoot整合dubbo、zookeeper,作为服务提供者工程
 
 ------
 
