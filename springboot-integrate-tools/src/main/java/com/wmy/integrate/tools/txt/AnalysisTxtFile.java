@@ -62,7 +62,4 @@ public class AnalysisTxtFile {
             e.printStackTrace();
         }
     }
-
-    public class
-
 }
