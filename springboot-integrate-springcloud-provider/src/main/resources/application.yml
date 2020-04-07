@@ -1,0 +1,14 @@
+#服务提供者的端口
+server:
+  port: 8002
+
+#应用程序名称
+spring:
+  application:
+    name: springcloud-provider
+
+eureka:
+  instance:
+    #注册的时候使用ip地址
+    prefer-ip-address: true
+

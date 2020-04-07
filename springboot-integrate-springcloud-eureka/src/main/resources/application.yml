@@ -1,0 +1,14 @@
+#服务端口
+server:
+  port: 8761
+
+eureka:
+  instance:
+    #注册中心eureka实例主机名
+    hostname: springcloud-eureka
+  client:
+    #不将自己注册到注册中心eureka
+    register-with-eureka: false
+    #不从注册中心eureka获取注册信息
+    fetch-registry: false
+
